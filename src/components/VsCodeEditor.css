@@ -1,0 +1,23 @@
+/* 🔥 Cursor animado como en la barra espaciadora */
+.cursor {
+    display: inline-block;
+    width: 8px;
+    height: 20px;
+    background: linear-gradient(45deg, #ffcc00, #ff6600);
+    box-shadow: 0px 0px 15px 4px rgba(255, 204, 0, 0.8);
+    animation: blink 1s infinite, glow 1.5s infinite alternate;
+    border-radius: 3px;
+}
+
+/* Animación de parpadeo */
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+/* Animación de brillo */
+@keyframes glow {
+    0% { box-shadow: 0px 0px 10px rgba(255, 204, 0, 0.5); }
+    100% { box-shadow: 0px 0px 20px rgba(255, 204, 0, 1); }
+}

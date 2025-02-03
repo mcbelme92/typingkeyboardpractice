@@ -1,38 +1,40 @@
 import React from "react";
-import { TextField } from "@mui/material";
+import { Box, Typography } from "@mui/material";
+import { useTyping } from "../hooks/useTyping";
+import TypingInput from "./typing/TypingInput";
 
-interface TypingInputProps {
-  userInput: string;
+interface TypingGameProps {
+  targetText: string;
+  onTypingComplete: () => void;
 }
 
-const TypingInput: React.FC<TypingInputProps> = ({ userInput }) => {
+const TypingGame: React.FC<TypingGameProps> = ({ targetText, onTypingComplete }) => {
+  const { userInput, wrongKeys, errorMessage } = useTyping(targetText, onTypingComplete);
+
   return (
-    <TextField
-      fullWidth
-      value={userInput}
-      variant="outlined"
-      placeholder="Escribe aquí..."
-      InputProps={{
-        sx: {
-          bgcolor: "#1e1e1e", // 🔥 Fondo oscuro VSCode
-          color: "#d4d4d4", // 🔥 Texto en gris claro
-          fontFamily: "Consolas, 'Courier New', monospace", // 🔥 Fuente VSCode
-          fontSize: "16px",
-          borderRadius: "5px",
-          boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.5)",
-          "& .MuiOutlinedInput-notchedOutline": {
-            borderColor: "#3c3c3c", // 🔥 Borde gris oscuro
-          },
-          "&:hover .MuiOutlinedInput-notchedOutline": {
-            borderColor: "#007acc", // 🔥 Azul VSCode en hover
-          },
-          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-            borderColor: "#569cd6", // 🔥 Azul más fuerte cuando está enfocado
-          },
-        },
-      }}
-    />
+    <Box sx={{ textAlign: "center", mt: 4 }}>
+      <TypingInput userInput={userInput} wrongKeys={wrongKeys} />
+      
+      {/* 🔥 Mensaje de error si se escribe mal */}
+      {errorMessage && (
+        <Typography
+          sx={{
+            color: "red",
+            mt: 2,
+            fontWeight: "bold",
+            animation: "blink 1s infinite",
+            "@keyframes blink": {
+              "0%": { opacity: 1 },
+              "50%": { opacity: 0 },
+              "100%": { opacity: 1 },
+            },
+          }}
+        >
+          {errorMessage}
+        </Typography>
+      )}
+    </Box>
   );
 };
 
-export default TypingInput;
+export default TypingGame;

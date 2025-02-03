@@ -1,62 +1,113 @@
 import { useState, useEffect } from "react";
 import { shiftCharacters, altGrCharacters } from "../data/keyboardConfig";
+import { formatCodeForTyping } from "../utils/formatText";
 
 export const useTyping = (text: string, onComplete: () => void) => {
+  const formattedText = formatCodeForTyping(text); // 🔥 Formateamos el código correctamente
+
   const [userInput, setUserInput] = useState("");
-  const [currentKey, setCurrentKey] = useState(text[0] || "");
+  const [currentKey, setCurrentKey] = useState(formattedText[0] || "");
   const [isShiftActive, setIsShiftActive] = useState(
-    shiftCharacters.has(text[0]) || /[A-Z]/.test(text[0])
+    shiftCharacters.has(formattedText[0]) || /^[A-Z]$/.test(formattedText[0])
   );
-  const [isAltGrActive, setIsAltGrActive] = useState(altGrCharacters.has(text[0]));
+  const [isAltGrActive, setIsAltGrActive] = useState(altGrCharacters.has(formattedText[0]));
+  const [wrongKeys, setWrongKeys] = useState<string[]>([]);
   const [isCompleted, setIsCompleted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     setUserInput("");
-    setCurrentKey(text[0] || "");
-    setIsShiftActive(shiftCharacters.has(text[0]) || /[A-Z]/.test(text[0])); // 🔥 Detecta mayúsculas
-    setIsAltGrActive(altGrCharacters.has(text[0]));
+    setCurrentKey(formattedText[0] || "");
+    setIsShiftActive(shiftCharacters.has(formattedText[0]) || /^[A-Z]$/.test(formattedText[0]));
+    setIsAltGrActive(altGrCharacters.has(formattedText[0]));
+    setWrongKeys([]);
     setIsCompleted(false);
-  }, [text]);
+    setErrorMessage(null);
+  }, [formattedText]);
 
   useEffect(() => {
-    if (userInput === text) {
+    if (userInput === formattedText) {
       setIsCompleted(true);
       onComplete();
     }
-  }, [userInput, text, onComplete]);
+  }, [userInput, formattedText, onComplete]);
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
       if (isCompleted) return;
-
+    
       const keyPressed = event.key;
-
-      if (keyPressed === "Backspace") {
-        setUserInput((prev) => prev.slice(0, -1));
-        const nextKey = text[userInput.length - 1] || text[0];
-
-        setCurrentKey(nextKey);
-        setIsShiftActive(shiftCharacters.has(nextKey) || /[A-Z]/.test(nextKey)); // 🔥 Si la anterior letra era mayúscula, activa Shift
-        setIsAltGrActive(altGrCharacters.has(nextKey));
+      console.log("Tecla presionada:", keyPressed);
+    
+      // 🔹 Evita marcar Shift, AltGr, Control, y CapsLock como errores
+      if (["Shift", "AltGraph", "Control", "CapsLock"].includes(keyPressed)) {
         return;
       }
-
-      if (keyPressed === text[userInput.length]) {
+    
+      // 🔥 Si hay errores, solo permitir `Backspace`
+      if (wrongKeys.length > 0 && keyPressed !== "Backspace") {
+        setErrorMessage("Corrige el error con Backspace antes de continuar.");
+        return; // ⛔ Bloquea escritura hasta que se corrija
+      }
+    
+      if (keyPressed === "Backspace") {
         setUserInput((prev) => {
-          const newInput = prev + keyPressed;
-          const nextKey = text[newInput.length] || "";
-
-          setCurrentKey(nextKey);
-          setIsShiftActive(shiftCharacters.has(nextKey) || /[A-Z]/.test(nextKey)); // 🔥 Shift activo si es mayúscula
-          setIsAltGrActive(altGrCharacters.has(nextKey));
+          const newInput = prev.slice(0, -1);
+          const newCurrentKey = formattedText[newInput.length] || formattedText[0];
+    
+          setCurrentKey(newCurrentKey);
+          setIsShiftActive(shiftCharacters.has(newCurrentKey) || /^[A-Z]$/.test(newCurrentKey));
+          setIsAltGrActive(altGrCharacters.has(newCurrentKey));
+          setWrongKeys([]); // 🔥 Borra errores al corregir
+          setErrorMessage(null); // 🔥 Quita mensaje de error
           return newInput;
         });
+        return;
+      }
+    
+      const expectedChar = formattedText[userInput.length];
+    
+      // 🔥 PERMITIR TILDES (cuando primero se presiona la tilde y luego la vocal)
+      if (expectedChar.normalize("NFD") === keyPressed.normalize("NFD")) {
+        setUserInput((prev) => {
+          const newInput = prev + keyPressed;
+          const newCurrentKey = formattedText[newInput.length] || "";
+    
+          setCurrentKey(newCurrentKey);
+          setIsShiftActive(shiftCharacters.has(newCurrentKey) || /^[A-Z]$/.test(newCurrentKey));
+          setIsAltGrActive(altGrCharacters.has(newCurrentKey));
+          setErrorMessage(null); // 🔥 Si acierta, borra el mensaje de error
+    
+          return newInput;
+        });
+      } 
+      // 🔹 Permitir la tilde (`´`) temporalmente sin marcarla como error
+      else if (keyPressed === "Dead") {
+        console.log("Esperando siguiente tecla para completar acento...");
+        return;
+      } 
+      // 🔥 Si la tecla es incorrecta, marcar error y bloquear escritura
+      else {
+        setWrongKeys((prev) => [...prev, keyPressed]);
+        setErrorMessage("Escribiste mal. Presiona Backspace para corregir.");
       }
     };
-
+    
+    
+  
     window.addEventListener("keydown", handleKeyPress);
     return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [text, userInput, isCompleted]);
+  }, [text, userInput, isCompleted, wrongKeys.length, formattedText]);
+  
 
-  return { userInput, currentKey, isShiftActive, isAltGrActive, setUserInput, isCompleted };
+  return {
+    userInput,
+    currentKey,
+    isShiftActive,
+    isAltGrActive,
+    wrongKeys,
+    errorMessage,
+    setUserInput,
+    isCompleted,
+  };
 };

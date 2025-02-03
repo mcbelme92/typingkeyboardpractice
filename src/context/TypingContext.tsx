@@ -25,6 +25,7 @@ export const TypingProvider: React.FC<TypingProviderProps> = ({ children }) => {
 };
 
 // 🔹 Hook personalizado para usar el contexto de manera segura
+// eslint-disable-next-line react-refresh/only-export-components
 export const useTypingContext = (): TypingContextProps => {
   const context = useContext(TypingContext);
   if (!context) {

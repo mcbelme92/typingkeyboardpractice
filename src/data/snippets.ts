@@ -1,18 +1,21 @@
+import { formatCodeForTypingVscode } from "../utils/formatText";
+
 export const snippets = [
   {
-    code: 'const variable = "Hola Mundo";',
-    explanation: "La variable 'variable' es una constante que almacena el texto 'Hola Mundo'. En JavaScript, puedes usar 'const' para definir valores que no cambiarán.",
+    code: `function calcularAreaCirculo(radio) {const PI = 3.1416; return PI * radio * radio;}; let resultado = calcularAreaCirculo(5); console.log("El área del círculo es:", resultado);`,
+    explanation:
+      "Esta función calcula el área de un círculo dado un radio. Se usa una constante 'PI' y una función que multiplica el radio al cuadrado por PI.",
   },
   {
-    code: 'pepe@hotmail.com',
-    explanation: "correo electronico",
+    code: formatCodeForTypingVscode(`console.log("El área del círculo es:", resultado);`),
+    explanation: "console.log",
   },
   {
-    code: 'let contador = 0;',
-    explanation: "'let' se usa para declarar variables que pueden cambiar su valor más tarde. Aquí, 'contador' comienza en 0.",
-},
-  
- 
-  
-    // Agrega más fragmentos de código aquí
-  ];
+    code: formatCodeForTypingVscode('const variable = "Hola Mundo";'),
+    explanation: "La variable 'variable' es una constante que almacena el texto 'Hola Mundo'.",
+  },
+  {
+    code: formatCodeForTypingVscode(`const frutas = ["Manzana", "Banana", "Naranja", "Uva"]; frutas.forEach((fruta) => console.log(fruta));`),
+    explanation: "Este código recorre un array de frutas y muestra cada elemento en la consola con 'forEach'.",
+  }
+];

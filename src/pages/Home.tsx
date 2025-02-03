@@ -20,24 +20,27 @@ const Home: React.FC = () => {
   };
 
   const {
+    userInput,
     currentKey,
     isShiftActive,
     isAltGrActive,
     isCompleted,
+    wrongKeys
   } = useTyping(snippets[currentSnippetIndex].code, handleTypingComplete);
-
+    
   return (
     <Container maxWidth="md">
       <Box sx={{ textAlign: "center", mt: 4 }}>
         <Typography variant="h4" gutterBottom>
           Aprende Código Tipando
         </Typography>
-        <VsCodeEditor code={snippets[currentSnippetIndex].code} />
+        
+        <VsCodeEditor code={snippets[currentSnippetIndex].code} cursorPosition={userInput.length} />
 
         {!isCompleted || !showExplanation ? (
           <>
             <TypingGame targetText={snippets[currentSnippetIndex].code} onTypingComplete={handleTypingComplete} />
-            <Keyboard currentKey={currentKey} isShiftActive={isShiftActive} isAltGrActive={isAltGrActive} />
+            <Keyboard currentKey={currentKey} isShiftActive={isShiftActive} isAltGrActive={isAltGrActive} wrongKeys={wrongKeys} />
           </>
         ) : (
           <Box sx={{ mt: 4 }}>

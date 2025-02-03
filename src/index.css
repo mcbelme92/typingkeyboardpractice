@@ -28,3 +28,16 @@ button {
 button:hover {
   background: #45a049;
 }
+
+.cursor {
+  display: inline-block;
+  width: 8px;
+  background-color: #ffcc00;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+}
