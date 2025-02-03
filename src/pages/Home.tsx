@@ -5,6 +5,7 @@ import VsCodeEditor from "../components/VsCodeEditor";
 import TypingGame from "../components/TypingGame";
 import { snippets } from "../data/snippets";
 import { useTyping } from "../hooks/useTyping";
+import { formatCodeForTypingVscode } from "../utils/formatText";
 
 const Home: React.FC = () => {
   const [currentSnippetIndex, setCurrentSnippetIndex] = useState(0);
@@ -35,7 +36,7 @@ const Home: React.FC = () => {
           Aprende Código Tipando
         </Typography>
         
-        <VsCodeEditor code={snippets[currentSnippetIndex].code} cursorPosition={userInput.length} />
+        <VsCodeEditor code={snippets[currentSnippetIndex].code}  cursorPosition={formatCodeForTypingVscode(userInput).length}  />
 
         {!isCompleted || !showExplanation ? (
           <>
