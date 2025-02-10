@@ -11,6 +11,7 @@ interface VSCodeEditorProps {
 }
 
 const VsCodeEditor: React.FC<VSCodeEditorProps> = ({ code, cursorPosition }) => {
+  console.log("vscodeeditorprop",code)
   // 🔹 Formatea el código antes de mostrarlo
   const formattedCode = formatCodeForTypingVscode(code);
   

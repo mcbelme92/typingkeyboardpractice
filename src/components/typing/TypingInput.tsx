@@ -9,6 +9,7 @@ interface TypingInputProps {
 const TypingInput: React.FC<TypingInputProps> = ({ userInput, wrongKeys }) => {
   return (
     <TextField
+      placeholder="Escribe aqui"
       value={userInput}
       fullWidth
       variant="outlined"

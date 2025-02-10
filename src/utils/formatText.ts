@@ -1,7 +1,9 @@
-export const formatCodeForTyping = (text: string): string => {
+export const formatCodeForTyping = (text?: string): string => {
+  if (!text) return ""; // 🔹 Si es undefined o null, retorna string vacío
+  
   return text
     .trim() // 🔥 Elimina espacios en blanco al inicio y final
-    .replace(/\s*\n\s*/g, " ") // 🔥 Reemplaza múltiples saltos de línea con un solo espacio
+    .replace(/\s*\n\s*/g, "\n") // 🔥 Ajusta saltos de línea
     .replace(/\t+/g, " "); // 🔥 Reemplaza tabulaciones con un solo espacio
 };
 
@@ -20,3 +22,5 @@ export const formatCodeForTypingVscode = (code: string): string => {
 
   return code; // Si ya tiene varias líneas, se devuelve sin cambios
 };
+
+
