@@ -4,6 +4,7 @@ import { formatCodeForTyping } from "../utils/formatText";
 
 export const useTyping = (text: string, onComplete: () => void) => {
   const formattedText = formatCodeForTyping(text); // 🔥 Formateamos el código correctamente
+  const [lastKeyPressed, setLastKeyPressed] = useState("");
 
   const [userInput, setUserInput] = useState("");
   const [currentKey, setCurrentKey] = useState(formattedText[0] || "");
@@ -37,6 +38,7 @@ export const useTyping = (text: string, onComplete: () => void) => {
       if (isCompleted) return;
 
       const keyPressed = event.key;
+      setLastKeyPressed(keyPressed)
       console.log("Tecla presionada:", keyPressed);
 
       // 🔹 Evita marcar Shift, AltGr, Control, y CapsLock como errores
@@ -106,5 +108,6 @@ export const useTyping = (text: string, onComplete: () => void) => {
     errorMessage,
     setUserInput,
     isCompleted,
+    lastKeyPressed
   };
 };

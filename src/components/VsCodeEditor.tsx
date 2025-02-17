@@ -8,27 +8,30 @@ import "./VsCodeEditor.css";
 interface VSCodeEditorProps {
   code: string;
   cursorPosition: number;
+  lastKeyPressed: string
 }
 
-const VsCodeEditor: React.FC<VSCodeEditorProps> = ({ code, cursorPosition }) => {
+const VsCodeEditor: React.FC<VSCodeEditorProps> = ({ code, cursorPosition,lastKeyPressed  }) => {
   console.log("vscodeeditorprop",code)
   // 🔹 Formatea el código antes de mostrarlo
   const formattedCode = formatCodeForTypingVscode(code);
   
   // 🔹 Función para ajustar correctamente la posición del cursor y evitar saltos innecesarios
-  const getNextValidCursorPosition = (text: string, position: number): number => {
+  const getNextValidCursorPosition = (text: string, position: number,lastKeyPressed: string): number => {
     let newPosition = position;
 
-    // 🔥 Avanza en espacios en blanco hasta encontrar una letra o símbolo válido
-    while (newPosition < text.length && /\s/.test(text[newPosition])) {
-      newPosition++;
-    }
-
+    
+ // 🔹 Solo avanza si la última tecla presionada fue "Space"
+ if (lastKeyPressed === " ") {
+  while (newPosition < text.length && text[newPosition] === " ") {
+    newPosition++;
+  }
+}
     return newPosition;
   };
 
   // 🔥 Ajusta la posición real del cursor en función del texto procesado
-  const adjustedCursorPosition = getNextValidCursorPosition(formattedCode, cursorPosition);
+  const adjustedCursorPosition = getNextValidCursorPosition(formattedCode, cursorPosition,lastKeyPressed);
 
   // 🔹 Inserta la tilde `|` en la posición correcta dentro del código
   const highlightedCode = `${formattedCode.slice(0, adjustedCursorPosition)}|${formattedCode.slice(

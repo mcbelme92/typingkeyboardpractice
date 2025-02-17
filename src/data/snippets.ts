@@ -2,7 +2,7 @@ import { formatCodeForTypingVscode } from "../utils/formatText";
 
 export const snippets = [
   {
-    code: `console.log("El área del círculo es:", resultado);`,
+    code: `const resultado = 3.1416; console.log("El área del círculo es:", resultado);`,
     explanation: "console.log",
   },
   {

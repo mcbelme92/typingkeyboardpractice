@@ -22,7 +22,7 @@ const Home: React.FC = () => {
     setShowExplanation(true); // 🔥 Muestra la explicación antes de avanzar
   };
 
-  const { userInput, currentKey, isShiftActive, isAltGrActive, isCompleted, wrongKeys } = useTyping(
+  const { userInput, currentKey, isShiftActive, isAltGrActive, isCompleted, wrongKeys,lastKeyPressed } = useTyping(
     snippets[currentSnippetIndex].code,
     handleTypingComplete
   );
@@ -36,6 +36,7 @@ const Home: React.FC = () => {
         <VsCodeEditor
           code={snippets[currentSnippetIndex].code}
           cursorPosition={formatCodeForTypingVscode(userInput).length}
+          lastKeyPressed={lastKeyPressed}
         />
 
         {!isCompleted || !showExplanation ? (
